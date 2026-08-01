@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PureScan - Ingredient Intelligence</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+
+  <header>
+    <div class="header-left">
+      <button id="btn-back" class="btn-icon" style="display: none;" title="Go Back">
+        <i data-lucide="undo-2"></i>
+      </button>
+    </div>
+    <div class="logo" id="logo-home">
+      <i data-lucide="leaf"></i> PureScan
+    </div>
+    <div class="header-right"></div>
+  </header>
+
+  <main>
+    <!-- Screen 1: Home -->
+    <section id="screen-home" class="screen active glass-panel">
+      <div>
+        <h1>Know What's Inside.</h1>
+        <p>Instantly analyze ingredient lists to uncover hidden benefits and harmful chemicals. Make informed decisions about the products you consume and apply.</p>
+      </div>
+
+      <div style="margin-top: 2rem;">
+        <button id="btn-start" class="btn btn-primary" style="width: 100%;">
+          <i data-lucide="scan"></i> Start Scanning
+        </button>
+        <p class="warning-text">
+          <i data-lucide="info" style="width: 14px; height: 14px; vertical-align: middle;"></i> 
+          No account required to scan. Note: Current session scans will not be saved permanently across devices.
+        </p>
+      </div>
+    </section>
+
+    <!-- Screen 2: Capture Source -->
+    <section id="screen-capture" class="screen">
+      <h2>Capture Ingredient List</h2>
+      <p>Take a clear picture of the ingredients or upload one from your gallery.</p>
+
+      <div class="camera-container" id="camera-container">
+        <!-- Placeholder text when empty -->
+        <div id="camera-placeholder" style="color: var(--sage-green); text-align: center; padding: 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem;">
+          <i data-lucide="image" size="48" style="opacity: 0.7;"></i>
+          <p style="color: var(--sage-green); font-size: 0.95rem; margin: 0;">No image loaded yet.<br>Click <strong>Open Camera</strong> or <strong>Gallery</strong> below.</p>
+        </div>
+        <!-- Live video feed -->
+        <video id="video-feed" autoplay playsinline style="display: none;"></video>
+        <!-- Captured image preview -->
+        <img id="image-preview" class="camera-preview" alt="Captured preview" style="display: none;" />
+      </div>
+
+      <div class="capture-controls">
+        <button id="btn-camera" class="btn btn-primary" title="Start Camera">
+          <i data-lucide="camera"></i> Open Camera
+        </button>
+        <button id="btn-take-photo" class="btn btn-primary" style="display: none;" title="Capture Photo">
+          <i data-lucide="aperture"></i> Capture
+        </button>
+        
+        <input type="file" id="gallery-input" class="hidden-input" accept="image/*">
+        <button id="btn-gallery" class="btn btn-secondary">
+          <i data-lucide="image"></i> Gallery
+        </button>
+
+        <!-- Shown after a photo is captured or uploaded -->
+        <button id="btn-save-gallery" class="btn btn-outline" style="display: none;">
+          <i data-lucide="download"></i> Save to Gallery
+        </button>
+        <button id="btn-analyze" class="btn btn-primary" style="display: none; width: 100%;">
+          <i data-lucide="sparkles"></i> Analyze Ingredients
+        </button>
+      </div>
+    </section>
+
+    <!-- Screen 3: Category Selection -->
+    <section id="screen-category" class="screen glass-panel">
+      <h2>Product Category</h2>
+      <p>Help us calibrate the AI by selecting the product type.</p>
+
+      <div class="category-cards">
+        <div class="category-card" data-category="food">
+          <i data-lucide="apple" size="32" style="color: var(--sage-green);"></i>
+          <p style="margin-top: 0.5rem; font-weight: 600;">Food & Beverage</p>
+        </div>
+        <div class="category-card" data-category="skincare">
+          <i data-lucide="sparkles" size="32" style="color: var(--sage-green);"></i>
+          <p style="margin-top: 0.5rem; font-weight: 600;">Skincare & Makeup</p>
+        </div>
+        <div class="category-card" data-category="other">
+          <i data-lucide="box" size="32" style="color: var(--sage-green);"></i>
+          <p style="margin-top: 0.5rem; font-weight: 600;">Other / Custom</p>
+        </div>
+      </div>
+
+      <button id="btn-process" class="btn btn-primary" style="margin-top: 1rem;" disabled>
+        Process Results <i data-lucide="arrow-right"></i>
+      </button>
+    </section>
+
+    <!-- Screen 4: Loading -->
+    <section id="screen-loading" class="screen">
+      <div class="loader-container glass-panel">
+        <div class="spinner"></div>
+        <h2 style="margin-bottom: 0;">Analyzing Ingredients...</h2>
+        <p id="loading-text">Extracting text from image</p>
+      </div>
+    </section>
+
+    <!-- Screen 5: Results -->
+    <section id="screen-results" class="screen">
+      <div class="results-header">
+        <h2>Analysis Results</h2>
+        <p id="results-meta">Based on your upload</p>
+      </div>
+
+      <div id="results-container">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+        <button id="btn-new-scan" class="btn btn-outline" style="flex: 1;">
+          <i data-lucide="rotate-ccw"></i> New Scan
+        </button>
+        <button id="btn-save-list" class="btn btn-primary" style="flex: 1;">
+          <i data-lucide="bookmark"></i> Save to Local Scope
+        </button>
+      </div>
+    </section>
+
+    <!-- Screen 6: Connection / Analysis Error -->
+    <section id="screen-error" class="screen glass-panel" style="text-align: center;">
+      <div style="margin: 0 auto 1.5rem auto; width: 64px; height: 64px; border-radius: 50%; background: var(--danger-light); display: flex; align-items: center; justify-content: center; color: var(--danger-red);">
+        <i data-lucide="wifi-off" size="36"></i>
+      </div>
+      <h2 id="error-title" style="color: var(--danger-red);">Analysis Failed</h2>
+      <p id="error-message" style="margin-top: 0.5rem; margin-bottom: 2rem;">
+        Internet connection is weak or Gemini AI was unable to reach the server. Please check your network connection and try again.
+      </p>
+
+      <div style="display: flex; gap: 1rem; justify-content: center;">
+        <button id="btn-retry-error" class="btn btn-primary">
+          <i data-lucide="refresh-cw"></i> Retry Analysis
+        </button>
+        <button id="btn-recapture-error" class="btn btn-outline">
+          <i data-lucide="camera"></i> Retake Photo
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
